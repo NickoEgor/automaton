@@ -31,6 +31,8 @@ private:
     bool on_mouse_press(GdkEventButton* ev);
     bool on_mouse_release(GdkEventButton* ev);
     bool on_mouse_motion(GdkEventMotion* ev);
+    bool on_mouse_enter(GdkEventCrossing* ev);
+    bool on_mouse_leave(GdkEventCrossing* ev);
     // other
     bool on_timeout();
 

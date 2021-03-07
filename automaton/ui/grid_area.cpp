@@ -6,13 +6,19 @@
 namespace automaton {
 
 grid_area::grid_area() {
-    // to catch mouse events
-    add_events(Gdk::BUTTON_PRESS_MASK | Gdk::BUTTON_RELEASE_MASK | Gdk::POINTER_MOTION_MASK);
+    // catch mouse press/release events
+    add_events(Gdk::BUTTON_PRESS_MASK | Gdk::BUTTON_RELEASE_MASK);
     signal_button_press_event().connect(sigc::mem_fun(*this, &grid_area::on_mouse_press));
     signal_button_release_event().connect(sigc::mem_fun(*this, &grid_area::on_mouse_release));
+    // catch mouse motion event
+    add_events(Gdk::POINTER_MOTION_MASK);
     signal_motion_notify_event().connect(sigc::mem_fun(*this, &grid_area::on_mouse_motion));
+    // catch mouse leave/enter events
+    add_events(Gdk::ENTER_NOTIFY_MASK | Gdk::LEAVE_NOTIFY_MASK);
+    signal_enter_notify_event().connect(sigc::mem_fun(*this, &grid_area::on_mouse_enter));
+    signal_leave_notify_event().connect(sigc::mem_fun(*this, &grid_area::on_mouse_leave));
 
-    // to catch keyboard events
+    // catch keyboard events
     add_events(Gdk::KEY_PRESS_MASK);
     property_can_focus() = true;
     signal_key_press_event().connect(sigc::mem_fun(*this, &grid_area::on_key_press));
@@ -127,23 +133,37 @@ bool grid_area::on_mouse_motion(GdkEventMotion* ev) {
     return false;
 }
 
+bool grid_area::on_mouse_enter(GdkEventCrossing* ev) {
+    g_debug("on_mouse_enter()");
+    (void)ev;
+    return false;
+}
+
+bool grid_area::on_mouse_leave(GdkEventCrossing* ev) {
+    g_debug("on_mouse_leave()");
+    (void)ev;
+    return false;
+}
+
 bool grid_area::on_timeout() {
-    g_debug("on_timeout()");
+    g_debug("on_timeout(): _is_drawing %d, _is_clearing %d", _is_drawing, _is_clearing);
+
     if (!_grid) return false;
 
-    g_debug("on_timeout(): _is_drawing %d, _is_clearing %d", _is_drawing, _is_clearing);
     if (_is_drawing || _is_clearing) {
         int x, y;
         get_pointer(x, y);
 
         size_t col = x / _cell_width;
         size_t row = y / _cell_width;
-        if (row >= _grid->get_rows() || col >= _grid->get_cols()) return false;
 
-        if (_is_drawing)
-            _grid->add(row, col);
-        else if (_is_clearing)
-            _grid->remove(row, col);
+        // NOTE: draw/clear only when mouse on grid
+        if (row < _grid->get_rows() && col < _grid->get_cols()) {
+            if (_is_drawing)
+                _grid->add(row, col);
+            else if (_is_clearing)
+                _grid->remove(row, col);
+        }
     }
 
     _grid->step();
@@ -152,7 +172,7 @@ bool grid_area::on_timeout() {
 }
 
 void grid_area::toggle_ongoing() {
-    g_debug("toggle_ongoing()");
+    g_debug("toggle_ongoing(): _is_ongoing %d", _is_ongoing);
     if (!_is_ongoing) {
         // ongoing timeout
         sigc::slot<bool()> _ongoing_slot = sigc::mem_fun(*this, &grid_area::on_timeout);
@@ -164,6 +184,7 @@ void grid_area::toggle_ongoing() {
         _ongoing_connection.disconnect();
         _is_ongoing = false;
     }
+    g_debug("toggle_ongoing(): new _is_ongoing %d", _is_ongoing);
 }
 
 void grid_area::draw_background(const Cairo::RefPtr<Cairo::Context>& cr) {
