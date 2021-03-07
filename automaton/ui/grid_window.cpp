@@ -162,8 +162,8 @@ int grid_window::on_cmdline(const app_cmdline_ptr& cmdline, app_ptr& app) {
 }
 
 void grid_window::initialize_grid() {
-    size_t cols = _options.cols == 0 ? _area.get_width() / _area.get_cell_width() : _options.cols;
-    size_t rows = _options.rows == 0 ? _area.get_height() / _area.get_cell_width() : _options.rows;
+    uint32_t cols = _options.cols == 0 ? _area.get_width() / _area.get_cell_width() : _options.cols;
+    uint32_t rows = _options.rows == 0 ? _area.get_height() / _area.get_cell_width() : _options.rows;
 
     // initialize grid
     if (_options.type == "1D") {

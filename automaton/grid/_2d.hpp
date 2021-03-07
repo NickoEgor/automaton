@@ -10,18 +10,18 @@ namespace automaton {
 
 class grid_2d : public base_grid {
 public:
-    grid_2d(size_t rows, size_t cols);
+    grid_2d(uint32_t rows, uint32_t cols);
     ~grid_2d() override;
 
-    void add(size_t row, size_t col) override;
-    bool remove(size_t row, size_t col) override;
-    bool has(size_t row, size_t col) override;
+    void add(uint32_t row, uint32_t col) override;
+    bool remove(uint32_t row, uint32_t col) override;
+    bool has(uint32_t row, uint32_t col) override;
     void clear() override;
 
     std::set<base_cell> get_drawable_cells() const override;
 
-    void set_rows(size_t rows) override;
-    void set_cols(size_t cols) override;
+    void set_rows(uint32_t rows) override;
+    void set_cols(uint32_t cols) override;
 
     // custom methods
     void move(base_cell from, base_cell to);
@@ -30,7 +30,7 @@ public:
 private:
     std::set<base_cell> _data;
 
-    void update_sizes(size_t rows, size_t cols);
+    void update_sizes(uint32_t rows, uint32_t cols);
 };
 
 using grid_2d_ptr = std::shared_ptr<grid_2d>;

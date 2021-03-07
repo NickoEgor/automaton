@@ -36,7 +36,7 @@ void grid_area::set_automaton(base_logic_ptr logic, base_grid_ptr grid) {
 
 void grid_area::set_grid_borders(bool borders) { _grid_borders = borders; }
 
-void grid_area::set_step_delay(size_t delay) { _delay = delay; }
+void grid_area::set_step_delay(uint32_t delay) { _delay = delay; }
 
 void grid_area::set_editable(bool is_editable) { _is_editable = is_editable; }
 
@@ -79,8 +79,8 @@ bool grid_area::on_mouse_press(GdkEventButton* ev) {
     if (!_is_editable) return false;
 
     if (ev->type == GDK_BUTTON_PRESS && (ev->button == 1 || ev->button == 3)) {
-        size_t col = ev->x / _cell_width;
-        size_t row = ev->y / _cell_width;
+        uint32_t col = ev->x / _cell_width;
+        uint32_t row = ev->y / _cell_width;
         if (row >= _grid->get_rows() || col >= _grid->get_cols()) return false;
 
         if (ev->button == 1) {
@@ -120,8 +120,8 @@ bool grid_area::on_mouse_motion(GdkEventMotion* ev) {
     if (!_is_drawing && !_is_clearing) return false;
 
     if (_is_drawing || _is_clearing) {
-        size_t col = ev->x / _cell_width;
-        size_t row = ev->y / _cell_width;
+        uint32_t col = ev->x / _cell_width;
+        uint32_t row = ev->y / _cell_width;
         if (row >= _grid->get_rows() || col >= _grid->get_cols()) return false;
 
         if (_is_drawing)
@@ -157,8 +157,8 @@ bool grid_area::on_timeout() {
         int x, y;
         get_pointer(x, y);
 
-        size_t col = x / _cell_width;
-        size_t row = y / _cell_width;
+        uint32_t col = x / _cell_width;
+        uint32_t row = y / _cell_width;
 
         // NOTE: draw/clear only when mouse on grid
         if (row < _grid->get_rows() && col < _grid->get_cols()) {
@@ -214,15 +214,15 @@ void grid_area::draw_grid_borders(const cairo_context& cr) {
     cr->set_line_width(_line_width);
 
     double x = _cell_width, y = _cell_width;
-    size_t width = get_grid_width(), height = get_grid_height();
+    uint32_t width = get_grid_width(), height = get_grid_height();
 
-    for (size_t col = 0; col < _grid->get_cols() - 1; col++) {
+    for (uint32_t col = 0; col < _grid->get_cols() - 1; col++) {
         cr->move_to(x, 0);
         cr->line_to(x, height);
         x += _cell_width;
     }
 
-    for (size_t row = 0; row < _grid->get_rows() - 1; row++) {
+    for (uint32_t row = 0; row < _grid->get_rows() - 1; row++) {
         cr->move_to(0, y);
         cr->line_to(width, y);
         y += _cell_width;
@@ -259,7 +259,7 @@ double grid_area::get_grid_height() const {
     return _cell_width * _grid->get_rows();
 }
 
-std::pair<double, double> grid_area::get_cell_xy(size_t row, size_t col) const {
+std::pair<double, double> grid_area::get_cell_xy(uint32_t row, uint32_t col) const {
     if (!_grid) return {0, 0};
 
     return std::make_pair(_cell_width * col, _cell_width * row);

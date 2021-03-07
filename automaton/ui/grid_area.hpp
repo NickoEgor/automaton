@@ -19,7 +19,7 @@ public:
 
     void set_automaton(base_logic_ptr logic, base_grid_ptr grid);
     void set_grid_borders(bool borders);
-    void set_step_delay(size_t delay);
+    void set_step_delay(uint32_t delay);
     void set_editable(bool is_editable);
     void set_cell_width(double cell_width);
 
@@ -48,7 +48,7 @@ private:
 
     double get_grid_width() const;
     double get_grid_height() const;
-    std::pair<double, double> get_cell_xy(size_t row, size_t col) const;
+    std::pair<double, double> get_cell_xy(uint32_t row, uint32_t col) const;
 
     base_logic_ptr _logic;
     base_grid_ptr _grid;
@@ -58,7 +58,7 @@ private:
     bool _is_clearing = false;
 
     bool _is_ongoing = false;
-    size_t _delay = 100;
+    uint32_t _delay = 100;
     sigc::connection _ongoing_connection;
 
     bool _grid_borders = false;

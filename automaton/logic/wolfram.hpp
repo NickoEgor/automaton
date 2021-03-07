@@ -17,7 +17,7 @@ private:
     grid_1d_ptr _grid;
 
     int8_t _code;
-    size_t _current_step = 0;
+    uint32_t _current_step = 0;
 };
 
 } // namespace logic

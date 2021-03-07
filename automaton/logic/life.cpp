@@ -6,16 +6,16 @@ namespace logic {
 life_2d::life_2d(base_grid_ptr grid) : _grid(std::static_pointer_cast<grid_2d>(grid)) {}
 
 void life_2d::step() {
-    size_t rows = _grid->get_rows(), cols = _grid->get_cols();
+    uint32_t rows = _grid->get_rows(), cols = _grid->get_cols();
     std::set<base_cell> new_state;
 
-    for (size_t row = 0; row < rows; row++) {
-        for (size_t col = 0; col < cols; col++) {
-            size_t prev_row = (row == 0 ? rows - 1 : row - 1);
-            size_t next_row = (row == rows - 1 ? 0 : row + 1);
+    for (uint32_t row = 0; row < rows; row++) {
+        for (uint32_t col = 0; col < cols; col++) {
+            uint32_t prev_row = (row == 0 ? rows - 1 : row - 1);
+            uint32_t next_row = (row == rows - 1 ? 0 : row + 1);
 
-            size_t prev_col = (col == 0 ? cols - 1 : col - 1);
-            size_t next_col = (col == cols - 1 ? 0 : col + 1);
+            uint32_t prev_col = (col == 0 ? cols - 1 : col - 1);
+            uint32_t next_col = (col == cols - 1 ? 0 : col + 1);
 
             uint8_t neighbours = 0;
             if (_grid->has(prev_row, prev_col)) ++neighbours;
