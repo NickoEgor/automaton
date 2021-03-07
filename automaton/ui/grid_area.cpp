@@ -39,7 +39,7 @@ void grid_area::set_editable(bool is_editable) { _is_editable = is_editable; }
 
 void grid_area::set_cell_width(double cell_width) { _cell_width = cell_width; }
 
-bool grid_area::on_draw_cells(const Cairo::RefPtr<Cairo::Context>& cr) {
+bool grid_area::on_draw_cells(const cairo_context& cr) {
     draw_background(cr);
     draw_frame(cr);
 
@@ -187,14 +187,14 @@ void grid_area::toggle_ongoing() {
     g_debug("toggle_ongoing(): new _is_ongoing %d", _is_ongoing);
 }
 
-void grid_area::draw_background(const Cairo::RefPtr<Cairo::Context>& cr) {
+void grid_area::draw_background(const cairo_context& cr) {
     cr->save();
     Gdk::Cairo::set_source_color(cr, _bg_color);
     cr->paint();
     cr->restore();
 }
 
-void grid_area::draw_frame(const Cairo::RefPtr<Cairo::Context>& cr) {
+void grid_area::draw_frame(const cairo_context& cr) {
     cr->save();
     Gdk::Cairo::set_source_color(cr, _border_color);
     cr->set_line_width(_line_width);
@@ -205,7 +205,7 @@ void grid_area::draw_frame(const Cairo::RefPtr<Cairo::Context>& cr) {
     cr->restore();
 }
 
-void grid_area::draw_grid_borders(const Cairo::RefPtr<Cairo::Context>& cr) {
+void grid_area::draw_grid_borders(const cairo_context& cr) {
     cr->save();
     Gdk::Cairo::set_source_color(cr, _border_color);
     cr->set_line_width(_line_width);
@@ -229,7 +229,7 @@ void grid_area::draw_grid_borders(const Cairo::RefPtr<Cairo::Context>& cr) {
     cr->restore();
 }
 
-void grid_area::draw_grid_cells(const Cairo::RefPtr<Cairo::Context>& cr) {
+void grid_area::draw_grid_cells(const cairo_context& cr) {
     cr->save();
     Gdk::Cairo::set_source_color(cr, _cell_color);
 

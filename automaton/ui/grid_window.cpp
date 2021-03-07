@@ -4,10 +4,10 @@
 #include <automaton/grid/_1d.hpp>
 #include <automaton/grid/_2d.hpp>
 #include <automaton/grid/_3d.hpp>
-#include <automaton/ui/grid_window.hpp>
 #include <automaton/logic/fall.hpp>
 #include <automaton/logic/life.hpp>
 #include <automaton/logic/wolfram.hpp>
+#include <automaton/ui/grid_window.hpp>
 #include <iostream>
 #include <memory>
 
@@ -38,8 +38,7 @@ bool grid_window::on_key_press(GdkEventKey* ev) {
     return false;
 }
 
-int grid_window::on_cmdline(const Glib::RefPtr<Gio::ApplicationCommandLine>& cmdline,
-                            Glib::RefPtr<Gtk::Application>& app) {
+int grid_window::on_cmdline(const app_cmdline_ptr& cmdline, app_ptr& app) {
     // NOTE:
     // https://gitlab.gnome.org/GNOME/glibmm/-/blob/glibmm-2-64/examples/options/main.cc
 

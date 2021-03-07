@@ -12,6 +12,9 @@ namespace automaton {
 
 class grid_window : public Gtk::ApplicationWindow {
 public:
+    using app_cmdline_ptr = Glib::RefPtr<Gio::ApplicationCommandLine>;
+    using app_ptr = Glib::RefPtr<Gtk::Application>;
+
     grid_window();
     ~grid_window() override;
 
@@ -31,7 +34,7 @@ private:
     void initialize_grid();
 
 public:
-    int on_cmdline(const Glib::RefPtr<Gio::ApplicationCommandLine>& cmdline, Glib::RefPtr<Gtk::Application>& app);
+    int on_cmdline(const app_cmdline_ptr& cmdline, app_ptr& app);
 };
 
 } // namespace automaton

@@ -11,6 +11,8 @@ namespace automaton {
 
 class grid_area : public Gtk::DrawingArea {
 public:
+    using cairo_context = Cairo::RefPtr<Cairo::Context>;
+
     grid_area();
     virtual ~grid_area();
 
@@ -24,7 +26,7 @@ public:
 
 private:
     // drawing
-    bool on_draw_cells(const Cairo::RefPtr<Cairo::Context>& cr);
+    bool on_draw_cells(const cairo_context& cr);
     // keyboard
     bool on_key_press(GdkEventKey* ev);
     // mouse
@@ -38,10 +40,10 @@ private:
 
     void toggle_ongoing();
 
-    void draw_background(const Cairo::RefPtr<Cairo::Context>& cr);
-    void draw_frame(const Cairo::RefPtr<Cairo::Context>& cr);
-    void draw_grid_borders(const Cairo::RefPtr<Cairo::Context>& cr);
-    void draw_grid_cells(const Cairo::RefPtr<Cairo::Context>& cr);
+    void draw_background(const cairo_context& cr);
+    void draw_frame(const cairo_context& cr);
+    void draw_grid_borders(const cairo_context& cr);
+    void draw_grid_cells(const cairo_context& cr);
 
     double get_grid_width() const;
     double get_grid_height() const;
