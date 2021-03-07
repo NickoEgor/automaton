@@ -17,8 +17,6 @@ struct cell_3d : public base_cell {
 
 class grid_3d : public base_grid {
 public:
-    typedef std::shared_ptr<base_logic> logic_ptr;
-
     grid_3d(size_t rows, size_t cols);
     ~grid_3d() override;
 
@@ -26,8 +24,6 @@ public:
     bool remove(size_t row, size_t col) override;
     bool has(size_t row, size_t col) override;
     void clear() override;
-
-    void step() override;
 
     std::set<base_cell> get_drawable_cells() const override;
 
@@ -44,5 +40,7 @@ private:
 
     void update_sizes(size_t rows, size_t cols);
 };
+
+using grid_3d_ptr = std::shared_ptr<grid_3d>;
 
 } // namespace automaton

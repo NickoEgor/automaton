@@ -18,8 +18,6 @@ public:
     bool has(size_t row, size_t col) override;
     void clear() override;
 
-    void step() override;
-
     std::set<base_cell> get_drawable_cells() const override;
 
     void set_rows(size_t rows) override;
@@ -34,5 +32,7 @@ private:
 
     void update_sizes(size_t rows, size_t cols);
 };
+
+using grid_2d_ptr = std::shared_ptr<grid_2d>;
 
 } // namespace automaton

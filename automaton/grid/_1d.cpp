@@ -26,11 +26,6 @@ bool grid_1d::has(size_t row, size_t col) { return _data.find({row, col}) != _da
 
 void grid_1d::clear() {
     _data.clear();
-    _logic->clear();
-}
-
-void grid_1d::step() {
-    if (_logic) _logic->step(*this);
 }
 
 std::set<base_cell> grid_1d::get_drawable_cells() const { return {_data.begin(), _data.end()}; }

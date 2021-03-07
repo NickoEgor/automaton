@@ -1,5 +1,6 @@
 #pragma once
 
+#include <automaton/base/cell.hpp>
 #include <automaton/base/grid.hpp>
 #include <memory>
 #include <set>
@@ -21,8 +22,6 @@ public:
     bool has(size_t row, size_t col) override;
     void clear() override;
 
-    void step() override;
-
     std::set<base_cell> get_drawable_cells() const override;
 
     // custom methods
@@ -31,5 +30,7 @@ public:
 private:
     std::set<cell_1d> _data;
 };
+
+using grid_1d_ptr = std::shared_ptr<grid_1d>;
 
 } // namespace automaton

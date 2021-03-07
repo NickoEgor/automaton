@@ -1,18 +1,21 @@
 #pragma once
 
-#include <automaton/base/grid.hpp>
+#include <automaton/base/logic.hpp>
+#include <automaton/grid/_1d.hpp>
 
 namespace automaton {
 namespace logic {
 
 class wolfram : public base_logic {
 public:
-    explicit wolfram(int8_t code);
+    wolfram(base_grid_ptr grid, int8_t code);
 
-    void step(base_grid& grid) override;
-    void clear() override;
+    void step() override;
+    void reset() override;
 
 private:
+    grid_1d_ptr _grid;
+
     int8_t _code;
     size_t _current_step = 0;
 };

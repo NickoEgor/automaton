@@ -1,6 +1,4 @@
 #include <automaton/grid/_2d.hpp>
-#include <automaton/logic/fall.hpp>
-#include <automaton/logic/life.hpp>
 
 namespace automaton {
 
@@ -10,33 +8,26 @@ grid_2d::~grid_2d() {}
 
 void grid_2d::add(size_t row, size_t col) { _data.emplace(row, col); }
 
-bool grid_2d::has(size_t row, size_t col) { return _data.find(base_cell{row, col}) != _data.end(); }
+bool grid_2d::has(size_t row, size_t col) { return _data.find({row, col}) != _data.end(); }
 
 bool grid_2d::remove(size_t row, size_t col) {
-    // TODO: use erase-find
-    for (auto it = _data.begin(); it != _data.end(); it++) {
-        if (it->row == row && it->col == col) {
-            _data.erase(it);
-            return true;
-        }
+    auto it = _data.find({row, col});
+    if (it != _data.end()) {
+        _data.erase(it);
+        return true;
     }
 
     return false;
 }
 
-void grid_2d::clear() {
-    _data.clear();
-    if (_logic) _logic->clear();
-}
-
-void grid_2d::step() {
-    if (_logic) _logic->step(*this);
-}
+void grid_2d::clear() { _data.clear(); }
 
 std::set<base_cell> grid_2d::get_drawable_cells() const { return {_data.begin(), _data.end()}; }
 
 void grid_2d::move(base_cell from, base_cell to) {
-    _data.erase(_data.find(from));
+    auto it = _data.find(from);
+    if (it != _data.end()) _data.erase(it);
+
     _data.insert(to);
 }
 

@@ -1,5 +1,4 @@
 #include <automaton/grid/_3d.hpp>
-#include <automaton/logic/fall.hpp>
 
 namespace automaton {
 
@@ -44,10 +43,6 @@ bool grid_3d::remove(size_t row, size_t col) {
 }
 
 void grid_3d::clear() { _data.clear(); }
-
-void grid_3d::step() {
-    if (_logic) _logic->step(*this);
-}
 
 std::set<base_cell> grid_3d::get_drawable_cells() const {
     std::set<base_cell> cells;

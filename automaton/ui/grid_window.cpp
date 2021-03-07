@@ -168,25 +168,24 @@ void grid_window::initialize_grid() {
     // initialize grid
     if (_options.type == "1D") {
         _grid = std::make_shared<automaton::grid_1d>(rows, cols);
-        // initialize logic
-        _grid->set_logic(std::make_shared<logic::wolfram>(_options.code_1d));
+        _logic = std::make_shared<logic::wolfram>(_grid, _options.code_1d);
 
     } else if (_options.type == "2D") {
         _grid = std::make_shared<automaton::grid_2d>(rows, cols);
         // initialize logic
         if (_options.logic_2d == "fall")
-            _grid->set_logic(std::make_shared<logic::fall_2d>());
+            _logic = std::make_shared<logic::fall_2d>(_grid);
         else if (_options.logic_2d == "life")
-            _grid->set_logic(std::make_shared<logic::life_2d>());
+            _logic = std::make_shared<logic::life_2d>(_grid);
 
     } else if (_options.type == "3D") {
         _grid = std::make_shared<automaton::grid_3d>(rows, cols);
         // initialize logic
-        _grid->set_logic(std::make_shared<logic::fall_3d>(_options.levels_3d));
+        _logic = std::make_shared<logic::fall_3d>(_grid, _options.levels_3d);
     }
 
     // setup grid drawing area
-    _area.set_grid(_grid);
+    _area.set_automaton(_logic, _grid);
     _area.set_grid_borders(_options.borders);
     _area.set_step_delay(_options.delay);
     _area.set_cell_width(_options.cell_width);

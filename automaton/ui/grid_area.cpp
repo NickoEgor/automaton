@@ -29,7 +29,10 @@ grid_area::grid_area() {
 
 grid_area::~grid_area() {}
 
-void grid_area::set_grid(std::shared_ptr<base_grid> grid) { _grid = grid; }
+void grid_area::set_automaton(base_logic_ptr logic, base_grid_ptr grid) {
+    _logic = logic;
+    _grid = grid;
+}
 
 void grid_area::set_grid_borders(bool borders) { _grid_borders = borders; }
 
@@ -55,7 +58,7 @@ bool grid_area::on_key_press(GdkEventKey* ev) {
     if (!_grid) return false;
 
     if (ev->keyval == GDK_KEY_s) {
-        _grid->step();
+        _logic->step();
         queue_draw();
         return true;
     } else if (ev->keyval == GDK_KEY_space) {
@@ -166,7 +169,7 @@ bool grid_area::on_timeout() {
         }
     }
 
-    _grid->step();
+    _logic->step();
     queue_draw();
     return true;
 }

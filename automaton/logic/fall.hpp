@@ -1,6 +1,8 @@
 #pragma once
 
-#include <automaton/base/grid.hpp>
+#include <automaton/base/logic.hpp>
+#include <automaton/grid/_2d.hpp>
+#include <automaton/grid/_3d.hpp>
 #include <random>
 
 namespace automaton {
@@ -8,23 +10,27 @@ namespace logic {
 
 class fall_2d : public base_logic {
 public:
-    fall_2d();
+    explicit fall_2d(base_grid_ptr grid);
 
-    void step(base_grid& grid) override;
-    void clear() override;
+    void step() override;
+    void reset() override;
 
 private:
+    grid_2d_ptr _grid;
+
     std::default_random_engine _engine;
     std::uniform_int_distribution<int16_t> _dist;
 };
 
 class fall_3d : public base_logic {
 public:
-    explicit fall_3d(uint16_t levels = 0);
-    void step(base_grid& grid) override;
-    void clear() override;
+    explicit fall_3d(base_grid_ptr grid, uint16_t levels = 0);
+
+    void step() override;
+    void reset() override;
 
 private:
+    grid_3d_ptr _grid;
     uint16_t _levels;
 
     std::default_random_engine _engine;

@@ -4,6 +4,7 @@
 #include <gtkmm/frame.h>
 
 #include <automaton/base/grid.hpp>
+#include <automaton/base/logic.hpp>
 #include <automaton/ui/grid_area.hpp>
 #include <automaton/utils/cmdline.hpp>
 #include <memory>
@@ -23,7 +24,9 @@ private:
     Gtk::Frame _frame;
     grid_area _area;
 
-    std::shared_ptr<base_grid> _grid;
+    base_logic_ptr _logic;
+    base_grid_ptr _grid;
+
     cmdline _options;
 
     // signals

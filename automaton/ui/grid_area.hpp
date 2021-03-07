@@ -3,6 +3,7 @@
 #include <gtkmm/drawingarea.h>
 
 #include <automaton/base/grid.hpp>
+#include <automaton/base/logic.hpp>
 #include <memory>
 #include <utility>
 #include <vector>
@@ -16,7 +17,7 @@ public:
     grid_area();
     virtual ~grid_area();
 
-    void set_grid(std::shared_ptr<base_grid> grid);
+    void set_automaton(base_logic_ptr logic, base_grid_ptr grid);
     void set_grid_borders(bool borders);
     void set_step_delay(size_t delay);
     void set_editable(bool is_editable);
@@ -49,7 +50,8 @@ private:
     double get_grid_height() const;
     std::pair<double, double> get_cell_xy(size_t row, size_t col) const;
 
-    std::shared_ptr<base_grid> _grid;
+    base_logic_ptr _logic;
+    base_grid_ptr _grid;
 
     bool _is_editable = true;
     bool _is_drawing = false;
