@@ -62,10 +62,12 @@ bool grid_area::on_key_press(GdkEventKey* ev) {
         queue_draw();
         return true;
     } else if (ev->keyval == GDK_KEY_space) {
-        toggle_ongoing();
+        toggle_motion();
         return true;
     } else if (ev->keyval == GDK_KEY_c) {
+        disable_motion();
         _grid->clear();
+        _logic->reset();
         queue_draw();
         return true;
     }
@@ -174,20 +176,32 @@ bool grid_area::on_timeout() {
     return true;
 }
 
-void grid_area::toggle_ongoing() {
-    g_debug("toggle_ongoing(): _is_ongoing %d", _is_ongoing);
-    if (!_is_ongoing) {
-        // ongoing timeout
-        sigc::slot<bool()> _ongoing_slot = sigc::mem_fun(*this, &grid_area::on_timeout);
+void grid_area::enable_motion() {
+    if (_is_motion) return;
 
-        // ongoing connection
-        _ongoing_connection = Glib::signal_timeout().connect(_ongoing_slot, _delay);
-        _is_ongoing = true;
-    } else {
-        _ongoing_connection.disconnect();
-        _is_ongoing = false;
-    }
-    g_debug("toggle_ongoing(): new _is_ongoing %d", _is_ongoing);
+    // motion timeout
+    sigc::slot<bool()> _motion_slot = sigc::mem_fun(*this, &grid_area::on_timeout);
+
+    // motion connection
+    _motion_connection = Glib::signal_timeout().connect(_motion_slot, _delay);
+    _is_motion = true;
+}
+
+void grid_area::disable_motion() {
+    if (!_is_motion) return;
+
+    _motion_connection.disconnect();
+    _is_motion = false;
+}
+
+void grid_area::toggle_motion() {
+    g_debug("toggle_motion(): _is_motion %d", _is_motion);
+    if (!_is_motion)
+        enable_motion();
+    else
+        disable_motion();
+
+    g_debug("toggle_motion(): new _is_motion %d", _is_motion);
 }
 
 void grid_area::draw_background(const cairo_context& cr) {

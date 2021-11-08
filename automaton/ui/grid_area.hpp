@@ -39,7 +39,9 @@ private:
     // other
     bool on_timeout();
 
-    void toggle_ongoing();
+    void enable_motion();
+    void disable_motion();
+    void toggle_motion();
 
     void draw_background(const cairo_context& cr);
     void draw_frame(const cairo_context& cr);
@@ -57,9 +59,9 @@ private:
     bool _is_drawing = false;
     bool _is_clearing = false;
 
-    bool _is_ongoing = false;
+    bool _is_motion = false;
     uint32_t _delay = 100;
-    sigc::connection _ongoing_connection;
+    sigc::connection _motion_connection;
 
     bool _grid_borders = false;
 
