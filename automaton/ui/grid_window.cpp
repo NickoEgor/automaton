@@ -9,8 +9,11 @@
 
 #include <glibmm/optioncontext.h>
 
+#include <format>
 #include <iostream>
 #include <memory>
+#include <string>
+#include <utility>
 
 namespace automaton {
 
@@ -20,7 +23,7 @@ grid_window::grid_window()
     set_default_size(800, 600);
     add(_frame);
 
-    _frame.property_margin() = 15;
+    _frame.property_margin() = 10;
     _frame.add(_area);
     _frame.property_visible() = true;
 
@@ -160,21 +163,29 @@ int grid_window::on_cmdline(const app_cmdline_ptr& cmdline, app_ptr& app) {
     return 0;
 }
 
+std::string grid_window::get_status() const {
+    std::string details;
+    if (_options.logic == "fall")
+        details = std::format("splices: {}", _options.fall.splices);
+    else if (_options.logic == "wolfram")
+        details = std::format("code: {}", _options.wolfram.code);
+
+    return std::format("logic: {}, {}, cols: {}, rows: {}", _options.logic.c_str(), (details.size() ? details : ""),
+                       _grid->get_cols(), _grid->get_rows());
+}
+
 void grid_window::initialize_grid() {
+    g_debug("grid_window::initialize_grid(logic='%s')", _options.logic.c_str());
+
     uint32_t cols = _options.cols == 0 ? _area.get_width() / _area.get_cell_width() : _options.cols;
     uint32_t rows = _options.rows == 0 ? _area.get_height() / _area.get_cell_width() : _options.rows;
 
     // initialize grid
     if (_options.logic == "wolfram") {
-        g_debug("grid_window::initialize_grid(logic='%s', code=%d)", _options.logic.c_str(), _options.wolfram.code);
-
         _grid = std::make_shared<automaton::grid_1d>(rows, cols);
         _logic = std::make_shared<logic::wolfram>(_grid, _options.wolfram.code);
 
     } else if (_options.logic == "fall" && _options.fall.splices != 1) {
-        g_debug("grid_window::initialize_grid 3d(logic='%s', splices=%d)", _options.logic.c_str(),
-                _options.fall.splices);
-
         _grid = std::make_shared<automaton::grid_3d>(rows, cols);
         _logic = std::make_shared<logic::fall_3d>(_grid, _options.fall.splices);
 
@@ -182,11 +193,8 @@ void grid_window::initialize_grid() {
         _grid = std::make_shared<automaton::grid_2d>(rows, cols);
 
         if (_options.logic == "fall") {
-            g_debug("grid_window::initialize_grid 2d(logic='%s', splices=%d)", _options.logic.c_str(),
-                    _options.fall.splices);
             _logic = std::make_shared<logic::fall_2d>(_grid);
         } else if (_options.logic == "life") {
-            g_debug("grid_window::initialize_grid(logic='%s')", _options.logic.c_str());
             _logic = std::make_shared<logic::life_2d>(_grid);
         }
     }
@@ -196,6 +204,7 @@ void grid_window::initialize_grid() {
     _area.set_grid_borders(_options.borders);
     _area.set_step_delay(_options.delay);
     _area.set_cell_width(_options.cell_width);
+    _area.set_information(get_status());
 }
 
 void grid_window::on_resize() {
@@ -204,6 +213,8 @@ void grid_window::on_resize() {
 
     if (_options.cols == 0) _grid->set_cols(_area.get_width() / _area.get_cell_width());
     if (_options.rows == 0) _grid->set_rows(_area.get_height() / _area.get_cell_width());
+
+    _area.set_information(get_status());
 }
 
 }  // namespace automaton

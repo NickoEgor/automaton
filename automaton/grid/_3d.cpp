@@ -19,16 +19,11 @@ bool cell_3d::operator<(const cell_3d& other) const {
     return row > other.row;
 }
 
-bool grid_3d::has(cell_3d cell) {
-    for (auto it = _cells.begin(); it != _cells.end(); it++) {
-        if (it->row == cell.row && it->col == cell.col) return true;
-    }
-    return false;
-}
-
 void grid_3d::remove(cell_3d cell) {
     std::erase_if(_cells, [&](const cell_3d& c) { return c.row == cell.row && c.col == cell.col; });
 }
+
+bool grid_3d::is_plain() const { return false; }
 
 void grid_3d::move(cell_3d from, cell_3d to) {
     _cells.erase(_cells.find(from));

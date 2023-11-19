@@ -20,8 +20,9 @@ class grid_3d final : public grid<cell_3d> {
 public:
     using grid<cell_3d>::grid;
 
-    bool has(cell_3d cell) override;
     void remove(cell_3d cell) override;
+
+    bool is_plain() const override;
 
     void set_rows(uint32_t rows) override;
     void set_cols(uint32_t cols) override;
@@ -34,4 +35,4 @@ private:
 
 using grid_3d_ptr = std::shared_ptr<grid_3d>;
 
-} // namespace automaton
+}  // namespace automaton

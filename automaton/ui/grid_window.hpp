@@ -9,6 +9,7 @@
 #include <gtkmm/frame.h>
 
 #include <memory>
+#include <string>
 
 namespace automaton {
 
@@ -36,6 +37,7 @@ private:
 
     // methods
     void initialize_grid();
+    std::string get_status() const;
 
 public:
     int on_cmdline(const app_cmdline_ptr& cmdline, app_ptr& app);

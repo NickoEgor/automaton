@@ -18,7 +18,7 @@ run-w: build/automaton
 	@build/automaton -l wolfram --code 110 --cell-width 5
 
 run-f: build/automaton
-	@build/automaton -l fall --splices 0
+	@build/automaton -l fall --splices 0 --cell-width 16
 
 run-l: build/automaton
 	@build/automaton -l life

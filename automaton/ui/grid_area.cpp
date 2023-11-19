@@ -1,5 +1,6 @@
 #include "automaton/ui/grid_area.hpp"
 
+#include <cairomm/fontface.h>
 #include <gdkmm/general.h>
 #include <glibmm/main.h>
 
@@ -42,13 +43,19 @@ void grid_area::set_editable(bool is_editable) { _is_editable = is_editable; }
 
 void grid_area::set_cell_width(double cell_width) { _cell_width = cell_width; }
 
+void grid_area::set_information(std::string information) { _information = std::move(information); }
+
 bool grid_area::on_draw_cells(const cairo_context& cr) {
     draw_background(cr);
     draw_frame(cr);
 
     if (_grid) {
         if (_grid_borders) draw_grid_borders(cr);
-        draw_grid_cells(cr);
+        draw_information(cr);
+        if (_grid->is_plain())
+            draw_plain_cells(cr);
+        else
+            draw_volumetric_cells(cr);
     }
 
     return false;
@@ -85,9 +92,10 @@ bool grid_area::on_key_press(GdkEventKey* ev) {
 bool grid_area::on_mouse_press(GdkEventButton* ev) {
     g_debug("grid_area::on_mouse_press()");
     if (!_grid) return false;
-    if (!_is_editable) return false;
 
     if (ev->type == GDK_BUTTON_PRESS && (ev->button == 1 || ev->button == 3)) {
+        if (!_is_editable) return false;
+
         uint32_t col = ev->x / _cell_width;
         uint32_t row = ev->y / _cell_width;
         if (row >= _grid->get_rows() || col >= _grid->get_cols()) return false;
@@ -101,6 +109,9 @@ bool grid_area::on_mouse_press(GdkEventButton* ev) {
         }
 
         queue_draw();
+        return true;
+    } else if (ev->type == GDK_BUTTON_PRESS && ev->button == 2) {
+        toggle_motion();
         return true;
     }
 
@@ -252,13 +263,50 @@ void grid_area::draw_grid_borders(const cairo_context& cr) {
     cr->restore();
 }
 
-void grid_area::draw_grid_cells(const cairo_context& cr) {
+void grid_area::draw_information(const cairo_context& cr) {
     cr->save();
-    Gdk::Cairo::set_source_color(cr, _cell_color);
+    cr->move_to(0, _font_size);
 
-    for (const auto& [row, col] : _grid->get_drawable_cells()) {
+    Gdk::Cairo::set_source_color(cr, _text_color);
+    cr->set_font_size(_font_size);
+    cr->select_font_face("", Cairo::FontSlant::FONT_SLANT_NORMAL, Cairo::FontWeight::FONT_WEIGHT_NORMAL);
+    cr->show_text(_information.c_str());
+
+    cr->restore();
+}
+
+void grid_area::draw_plain_cells(const cairo_context& cr) {
+    cr->save();
+
+    Gdk::Cairo::set_source_color(cr, _cell_color);
+    for (const auto& [row, col] : _grid->get_plain_cells()) {
         cr->rectangle(_cell_width * col, _cell_width * row, _cell_width, _cell_width);
-        cr->fill();
+    }
+    cr->fill();
+
+    cr->restore();
+}
+
+void grid_area::draw_volumetric_cells(const cairo_context& cr) {
+    cr->save();
+
+    const auto& multicells = _grid->get_volumetric_cells();
+
+    Gdk::Cairo::set_source_color(cr, _cell_color);
+    for (const auto& [cell, amount] : multicells) {
+        cr->rectangle(_cell_width * cell.col, _cell_width * cell.row, _cell_width, _cell_width);
+    }
+    cr->fill();
+
+    // do not draw if text is too small
+    if (_cell_width >= _min_font_size) {
+        Gdk::Cairo::set_source_color(cr, _cell_text_color);
+        cr->set_font_size(_cell_width);
+        cr->select_font_face("", Cairo::FontSlant::FONT_SLANT_NORMAL, Cairo::FontWeight::FONT_WEIGHT_BOLD);
+        for (const auto& [cell, amount] : multicells) {
+            cr->move_to(_cell_width * cell.col, _cell_width * (cell.row + 0.7));
+            cr->show_text(std::to_string(amount));
+        }
     }
 
     cr->restore();

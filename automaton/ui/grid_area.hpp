@@ -7,7 +7,7 @@
 
 #include <memory>
 #include <utility>
-#include <vector>
+#include <string>
 
 namespace automaton {
 
@@ -23,6 +23,7 @@ public:
     void set_step_delay(uint32_t delay);
     void set_editable(bool is_editable);
     void set_cell_width(double cell_width);
+    void set_information(std::string information);
 
     double get_cell_width() const;
 
@@ -47,7 +48,9 @@ private:
     void draw_background(const cairo_context& cr);
     void draw_frame(const cairo_context& cr);
     void draw_grid_borders(const cairo_context& cr);
-    void draw_grid_cells(const cairo_context& cr);
+    void draw_information(const cairo_context& cr);
+    void draw_plain_cells(const cairo_context& cr);
+    void draw_volumetric_cells(const cairo_context& cr);
 
     double get_grid_width() const;
     double get_grid_height() const;
@@ -65,11 +68,18 @@ private:
 
     bool _grid_borders = false;
 
+    std::string _information;
+
     const Gdk::Color _bg_color{"#fbfbfb"};
     const Gdk::Color _border_color{"#000000"};
     const Gdk::Color _cell_color{"#008080"};
+    const Gdk::Color _text_color{"#ff0000"};
+    const Gdk::Color _cell_text_color{"#000000"};
 
-    double _cell_width = 15;
+    const int _font_size = 18;
+    const int _min_font_size = 16;
+
+    double _cell_width = 16;
     const double _line_width = 0.5;
 };
 

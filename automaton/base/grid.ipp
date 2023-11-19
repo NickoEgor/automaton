@@ -36,8 +36,17 @@ void grid<Cell>::clear() {
 }
 
 template<class Cell>
-std::set<base_cell> grid<Cell>::get_drawable_cells() const {
+std::set<base_cell> grid<Cell>::get_plain_cells() const {
     return {_cells.begin(), _cells.end()};
+}
+
+template<class Cell>
+std::map<base_cell, uint16_t> grid<Cell>::get_volumetric_cells() const {
+    std::map<base_cell, uint16_t> counter;
+    for (const auto& cell : _cells) {
+        counter[{cell.row, cell.col}]++;
+    }
+    return counter;
 }
 
 template<class Cell>

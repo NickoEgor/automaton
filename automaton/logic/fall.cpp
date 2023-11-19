@@ -2,6 +2,7 @@
 
 #include <set>
 #include <vector>
+#include <utility>
 
 namespace automaton {
 namespace logic {
@@ -53,6 +54,9 @@ fall_3d::fall_3d(base_grid_ptr grid, uint16_t slices)
 bool fall_3d::step() {
     std::set<cell_3d> data_copy = _grid->get_cells();
 
+    std::vector<cell_3d> positions;
+    positions.reserve(4);
+
     for (auto it = data_copy.begin(); it != data_copy.end(); it++) {
         if (it->row == _grid->get_rows() - 1) continue;
 
@@ -62,7 +66,7 @@ bool fall_3d::step() {
             continue;
         }
 
-        std::vector<cell_3d> positions;
+        positions.clear();
 
         cell_3d cell_left{it->row + 1, it->col - 1, it->slice};
         if (it->col > 0 && !_grid->has(cell_left)) {
@@ -85,13 +89,14 @@ bool fall_3d::step() {
                 positions.emplace_back(cell_front);
             }
         } else {
-            cell_3d cell_front{it->row + 1, it->col, it->slice + 1};
-            if (it->slice < _slices && !_grid->has(cell_front)) {
-                positions.emplace_back(cell_front);
+            cell_3d cell_back{it->row + 1, it->col, it->slice - 1};
+            if (it->slice > -_slices && !_grid->has(cell_back)) {
+                positions.emplace_back(std::move(cell_back));
             }
 
-            if (it->slice > -_slices && !_grid->has({it->row + 1, it->col, it->slice})) {
-                positions.emplace_back(it->row + 1, it->col, it->slice - 1);
+            cell_3d cell_front{it->row + 1, it->col, it->slice + 1};
+            if (it->slice < _slices && !_grid->has(cell_front)) {
+                positions.emplace_back(std::move(cell_front));
             }
         }
 

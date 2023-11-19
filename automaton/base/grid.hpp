@@ -4,6 +4,7 @@
 
 #include <memory>
 #include <set>
+#include <map>
 
 namespace automaton {
 
@@ -18,7 +19,9 @@ public:
     virtual void remove(uint32_t row, uint32_t col) = 0;
     virtual bool has(uint32_t row, uint32_t col) = 0;
 
-    virtual std::set<base_cell> get_drawable_cells() const = 0;
+    virtual bool is_plain() const { return true; }
+    virtual std::set<base_cell> get_plain_cells() const = 0;
+    virtual std::map<base_cell, uint16_t> get_volumetric_cells() const = 0;
 
     /* TODO: do something with size updates in successors to get rid of virtual */
     virtual void set_rows(uint32_t rows) { _rows = rows; }
@@ -49,7 +52,9 @@ public:
     bool has(uint32_t row, uint32_t col) override;
     void clear() override;
 
-    std::set<base_cell> get_drawable_cells() const override;
+    std::set<base_cell> get_plain_cells() const override;
+    std::map<base_cell, uint16_t> get_volumetric_cells() const override;
+
     const std::set<Cell>& get_cells() const;
 
 protected:
