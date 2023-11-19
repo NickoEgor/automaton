@@ -4,7 +4,6 @@
 
 #include <memory>
 #include <set>
-#include <utility>  // TODO: move to src
 
 namespace automaton {
 
@@ -16,7 +15,7 @@ public:
     virtual ~base_grid() = default;
 
     virtual void add(uint32_t row, uint32_t col) = 0;
-    virtual bool remove(uint32_t row, uint32_t col) = 0;
+    virtual void remove(uint32_t row, uint32_t col) = 0;
     virtual bool has(uint32_t row, uint32_t col) = 0;
 
     virtual std::set<base_cell> get_drawable_cells() const = 0;
@@ -42,19 +41,19 @@ public:
     using base_grid::base_grid;
 
     virtual void add(Cell cell);
-    virtual bool remove(Cell cell);
+    virtual void remove(Cell cell);
     virtual bool has(Cell cell);
 
     void add(uint32_t row, uint32_t col) override;
-    bool remove(uint32_t row, uint32_t col) override;
+    void remove(uint32_t row, uint32_t col) override;
     bool has(uint32_t row, uint32_t col) override;
     void clear() override;
 
     std::set<base_cell> get_drawable_cells() const override;
-    const std::set<Cell>& get_data() const;
+    const std::set<Cell>& get_cells() const;
 
 protected:
-    std::set<Cell> _data;
+    std::set<Cell> _cells;
 };
 
 }  // namespace automaton

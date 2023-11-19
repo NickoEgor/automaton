@@ -21,7 +21,7 @@ public:
     using grid<cell_3d>::grid;
 
     bool has(cell_3d cell) override;
-    bool remove(cell_3d cell) override;
+    void remove(cell_3d cell) override;
 
     void set_rows(uint32_t rows) override;
     void set_cols(uint32_t cols) override;

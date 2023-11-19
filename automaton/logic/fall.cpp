@@ -12,7 +12,7 @@ fall_2d::fall_2d(base_grid_ptr grid)
       _dist(std::uniform_int_distribution<int16_t>(1, 2)) {}
 
 void fall_2d::step() {
-    std::set<cell_2d> data_copy = _grid->get_data();
+    std::set<cell_2d> data_copy = _grid->get_cells();
 
     for (auto it = data_copy.begin(); it != data_copy.end(); it++) {
         if (it->row == _grid->get_rows() - 1) continue;
@@ -49,7 +49,7 @@ fall_3d::fall_3d(base_grid_ptr grid, uint16_t slices)
       _dist(std::uniform_int_distribution<int16_t>(1, 12)) {}
 
 void fall_3d::step() {
-    std::set<cell_3d> data_copy = _grid->get_data();
+    std::set<cell_3d> data_copy = _grid->get_cells();
 
     for (auto it = data_copy.begin(); it != data_copy.end(); it++) {
         if (it->row == _grid->get_rows() - 1) continue;

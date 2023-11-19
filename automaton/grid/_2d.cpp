@@ -11,10 +11,10 @@ bool cell_2d::operator<(const cell_2d& other) const {
 }
 
 void grid_2d::move(cell_2d from, cell_2d to) {
-    auto it = _data.find(from);
-    if (it != _data.end()) _data.erase(it);
+    auto it = _cells.find(from);
+    if (it != _cells.end()) _cells.erase(it);
 
-    _data.insert(to);
+    _cells.insert(to);
 }
 
 void grid_2d::set_rows(uint32_t rows) {
@@ -28,9 +28,9 @@ void grid_2d::set_cols(uint32_t cols) {
 }
 
 void grid_2d::update_sizes(uint32_t rows, uint32_t cols) {
-    for (auto it = _data.begin(); it != _data.end();) {
+    for (auto it = _cells.begin(); it != _cells.end();) {
         if (it->row > rows - 1 || it->col > cols - 1)
-            it = _data.erase(it);
+            it = _cells.erase(it);
         else
             it++;
     }

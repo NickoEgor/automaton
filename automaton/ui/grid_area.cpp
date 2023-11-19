@@ -59,6 +59,7 @@ bool grid_area::on_key_press(GdkEventKey* ev) {
     if (!_grid) return false;
 
     if (ev->keyval == GDK_KEY_s) {
+        disable_motion();
         _logic->step();
         queue_draw();
         return true;
@@ -177,6 +178,7 @@ bool grid_area::on_timeout() {
 }
 
 void grid_area::enable_motion() {
+    g_debug("grid_area::enable_motion(is_motion=%d)", _is_motion);
     if (_is_motion) return;
 
     // motion timeout
@@ -188,6 +190,7 @@ void grid_area::enable_motion() {
 }
 
 void grid_area::disable_motion() {
+    g_debug("grid_area::disable_motion(is_motion=%d)", _is_motion);
     if (!_is_motion) return;
 
     _motion_connection.disconnect();
@@ -195,7 +198,6 @@ void grid_area::disable_motion() {
 }
 
 void grid_area::toggle_motion() {
-    g_debug("grid_area::toggle_motion(is_motion=%d)", _is_motion);
     if (!_is_motion)
         enable_motion();
     else

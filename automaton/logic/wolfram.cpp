@@ -13,8 +13,9 @@ void wolfram::step() {
     if (_current_step + 1 == rows) return;
 
     // when starting: fast forward to first row with cells (ignoring last row)
-    if (_current_step == 0 && _grid->get_data().size() > 0 && _grid->get_data().begin()->row != rows - 1)
-        _current_step = _grid->get_data().begin()->row;
+    const auto& cells = _grid->get_cells();
+    if (_current_step == 0 && cells.size() > 0 && cells.begin()->row != rows - 1)
+        _current_step = cells.begin()->row;
 
     uint32_t row = _current_step;
 

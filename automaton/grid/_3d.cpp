@@ -1,5 +1,6 @@
 #include "automaton/grid/_3d.hpp"
 
+#include <algorithm>
 #include <utility>
 
 namespace automaton {
@@ -19,30 +20,19 @@ bool cell_3d::operator<(const cell_3d& other) const {
 }
 
 bool grid_3d::has(cell_3d cell) {
-    for (auto it = _data.begin(); it != _data.end(); it++) {
+    for (auto it = _cells.begin(); it != _cells.end(); it++) {
         if (it->row == cell.row && it->col == cell.col) return true;
     }
     return false;
 }
 
-bool grid_3d::remove(cell_3d cell) {
-    bool removed = false;
-
-    for (auto it = _data.begin(); it != _data.end(); it++) {
-        if (it->row == cell.row && it->col == cell.col) {
-            _data.erase(it);
-            // don't return from cycle to remove
-            // same row/col with diff slices
-            removed = true;
-        }
-    }
-
-    return removed;
+void grid_3d::remove(cell_3d cell) {
+    std::erase_if(_cells, [&](const cell_3d& c) { return c.row == cell.row && c.col == cell.col; });
 }
 
 void grid_3d::move(cell_3d from, cell_3d to) {
-    _data.erase(_data.find(from));
-    _data.insert(to);
+    _cells.erase(_cells.find(from));
+    _cells.insert(to);
 }
 
 void grid_3d::set_rows(uint32_t rows) {
@@ -56,9 +46,9 @@ void grid_3d::set_cols(uint32_t cols) {
 }
 
 void grid_3d::update_sizes(uint32_t rows, uint32_t cols) {
-    for (auto it = _data.begin(); it != _data.end();) {
+    for (auto it = _cells.begin(); it != _cells.end();) {
         if (it->row > rows - 1 || it->col > cols - 1)
-            it = _data.erase(it);
+            it = _cells.erase(it);
         else
             it++;
     }
