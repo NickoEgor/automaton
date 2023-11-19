@@ -8,7 +8,8 @@ class base_logic {
 public:
     virtual ~base_logic() = default;
 
-    virtual void step() = 0;
+    // return false if no steps left
+    virtual bool step() = 0;
     virtual void reset() = 0;
 };
 

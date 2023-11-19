@@ -13,7 +13,7 @@ class fall_2d : public base_logic {
 public:
     explicit fall_2d(base_grid_ptr grid);
 
-    void step() override;
+    bool step() override;
     void reset() override;
 
 private:
@@ -28,7 +28,7 @@ class fall_3d : public base_logic {
 public:
     explicit fall_3d(base_grid_ptr grid, uint16_t slices = 0);
 
-    void step() override;
+    bool step() override;
     void reset() override;
 
 private:

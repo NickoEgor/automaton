@@ -7,10 +7,10 @@ wolfram::wolfram(base_grid_ptr grid, int8_t code)
     : _grid(std::static_pointer_cast<grid_1d>(grid)),
       _code(code) {}
 
-void wolfram::step() {
+bool wolfram::step() {
     uint32_t rows = _grid->get_rows(), cols = _grid->get_cols();
 
-    if (_current_step + 1 == rows) return;
+    if (_current_step + 1 == rows) return false;
 
     // when starting: fast forward to first row with cells (ignoring last row)
     const auto& cells = _grid->get_cells();
@@ -34,6 +34,7 @@ void wolfram::step() {
     }
 
     _current_step++;
+    return true;
 }
 
 void wolfram::reset() { _current_step = 0; }

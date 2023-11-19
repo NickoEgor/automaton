@@ -10,7 +10,7 @@ class life_2d : public base_logic {
 public:
     explicit life_2d(base_grid_ptr grid);
 
-    void step() override;
+    bool step() override;
     void reset() override;
 
 private:

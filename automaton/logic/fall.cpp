@@ -11,7 +11,7 @@ fall_2d::fall_2d(base_grid_ptr grid)
       _engine(std::default_random_engine(std::random_device{}())),
       _dist(std::uniform_int_distribution<int16_t>(1, 2)) {}
 
-void fall_2d::step() {
+bool fall_2d::step() {
     std::set<cell_2d> data_copy = _grid->get_cells();
 
     for (auto it = data_copy.begin(); it != data_copy.end(); it++) {
@@ -38,6 +38,8 @@ void fall_2d::step() {
         auto position = positions.at(direction);
         _grid->move(*it, position);
     }
+
+    return true;
 }
 
 void fall_2d::reset() {}
@@ -48,7 +50,7 @@ fall_3d::fall_3d(base_grid_ptr grid, uint16_t slices)
       _engine(std::default_random_engine(std::random_device{}())),
       _dist(std::uniform_int_distribution<int16_t>(1, 12)) {}
 
-void fall_3d::step() {
+bool fall_3d::step() {
     std::set<cell_3d> data_copy = _grid->get_cells();
 
     for (auto it = data_copy.begin(); it != data_copy.end(); it++) {
@@ -99,6 +101,8 @@ void fall_3d::step() {
         auto position = positions.at(direction);
         _grid->move(*it, position);
     }
+
+    return true;
 }
 
 void fall_3d::reset() {}

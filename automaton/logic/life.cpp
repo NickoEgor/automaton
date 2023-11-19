@@ -8,7 +8,7 @@ namespace logic {
 life_2d::life_2d(base_grid_ptr grid)
     : _grid(std::static_pointer_cast<grid_2d>(grid)) {}
 
-void life_2d::step() {
+bool life_2d::step() {
     uint32_t rows = _grid->get_rows(), cols = _grid->get_cols();
     std::set<cell_2d> new_state;
 
@@ -41,6 +41,8 @@ void life_2d::step() {
     /* TODO: probably worth replacing state completely, not one by one */
     for (const auto& cell : new_state)
         _grid->add(cell);
+
+    return true;
 }
 
 void life_2d::reset() {}

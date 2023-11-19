@@ -10,7 +10,7 @@ class wolfram : public base_logic {
 public:
     wolfram(base_grid_ptr grid, int8_t code);
 
-    void step() override;
+    bool step() override;
     void reset() override;
 
 private:

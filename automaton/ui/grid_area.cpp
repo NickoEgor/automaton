@@ -58,17 +58,22 @@ bool grid_area::on_key_press(GdkEventKey* ev) {
     g_debug("grid_area::on_key_press(key='%s')", ev->string);
     if (!_grid) return false;
 
-    if (ev->keyval == GDK_KEY_s) {
+    if (ev->keyval == GDK_KEY_space) {
+        toggle_motion();
+        return true;
+    } else if (ev->keyval == GDK_KEY_s) {
         disable_motion();
         _logic->step();
         queue_draw();
         return true;
-    } else if (ev->keyval == GDK_KEY_space) {
-        toggle_motion();
-        return true;
     } else if (ev->keyval == GDK_KEY_c) {
         disable_motion();
         _grid->clear();
+        _logic->reset();
+        queue_draw();
+        return true;
+    } else if (ev->keyval == GDK_KEY_r) {
+        disable_motion();
         _logic->reset();
         queue_draw();
         return true;
@@ -172,7 +177,8 @@ bool grid_area::on_timeout() {
         }
     }
 
-    _logic->step();
+    if (!_logic->step()) disable_motion();
+
     queue_draw();
     return true;
 }
