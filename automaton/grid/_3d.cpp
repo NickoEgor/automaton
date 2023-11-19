@@ -1,12 +1,16 @@
-#include <automaton/grid/_3d.hpp>
+#include "automaton/grid/_3d.hpp"
+
+#include <utility>
 
 namespace automaton {
 
-cell_3d::cell_3d(uint32_t row, uint32_t col, int level) : base_cell(row, col), level(level) {}
+cell_3d::cell_3d(uint32_t row, uint32_t col, int slice)
+    : base_cell(row, col),
+      slice(slice) {}
 
 bool cell_3d::operator<(const cell_3d& other) const {
     if (row == other.row) {
-        if (col == other.col) return level < other.level;
+        if (col == other.col) return slice < other.slice;
         return col < other.col;
     }
 
@@ -14,27 +18,21 @@ bool cell_3d::operator<(const cell_3d& other) const {
     return row > other.row;
 }
 
-grid_3d::grid_3d(uint32_t rows, uint32_t cols) : base_grid(rows, cols) {}
-
-grid_3d::~grid_3d() {}
-
-void grid_3d::add(uint32_t row, uint32_t col) { _data.emplace(row, col); }
-
-bool grid_3d::has(uint32_t row, uint32_t col) {
+bool grid_3d::has(cell_3d cell) {
     for (auto it = _data.begin(); it != _data.end(); it++) {
-        if (it->row == row && it->col == col) return true;
+        if (it->row == cell.row && it->col == cell.col) return true;
     }
     return false;
 }
 
-bool grid_3d::remove(uint32_t row, uint32_t col) {
+bool grid_3d::remove(cell_3d cell) {
     bool removed = false;
 
     for (auto it = _data.begin(); it != _data.end(); it++) {
-        if (it->row == row && it->col == col) {
+        if (it->row == cell.row && it->col == cell.col) {
             _data.erase(it);
             // don't return from cycle to remove
-            // same row/col with diff levels
+            // same row/col with diff slices
             removed = true;
         }
     }
@@ -42,25 +40,10 @@ bool grid_3d::remove(uint32_t row, uint32_t col) {
     return removed;
 }
 
-void grid_3d::clear() { _data.clear(); }
-
-std::set<base_cell> grid_3d::get_drawable_cells() const {
-    std::set<base_cell> cells;
-    for (auto& cell : _data)
-        cells.emplace(cell.row, cell.col);
-    return cells;
-}
-
-bool grid_3d::has(uint32_t row, uint32_t col, int level) const {
-    return _data.find(cell_3d{row, col, level}) != _data.end();
-}
-
 void grid_3d::move(cell_3d from, cell_3d to) {
     _data.erase(_data.find(from));
     _data.insert(to);
 }
-
-const std::set<cell_3d>& grid_3d::get_data() const { return _data; }
 
 void grid_3d::set_rows(uint32_t rows) {
     base_grid::set_rows(rows);
@@ -81,4 +64,4 @@ void grid_3d::update_sizes(uint32_t rows, uint32_t cols) {
     }
 }
 
-} // namespace automaton
+}  // namespace automaton

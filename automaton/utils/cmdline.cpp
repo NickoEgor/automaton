@@ -1,4 +1,4 @@
-#include <automaton/utils/cmdline.hpp>
+#include "automaton/utils/cmdline.hpp"
 
 namespace automaton {
 
@@ -35,4 +35,4 @@ bool cmdline::validate_logic_2d() const { return logic_2d == "fall" || logic_2d 
 // 3D
 bool cmdline::validate_levels_3d() const { return levels_3d >= 0; }
 
-} // namespace automaton
+}  // namespace automaton

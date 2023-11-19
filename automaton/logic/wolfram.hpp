@@ -1,7 +1,7 @@
 #pragma once
 
-#include <automaton/base/logic.hpp>
-#include <automaton/grid/_1d.hpp>
+#include "automaton/base/logic.hpp"
+#include "automaton/grid/_1d.hpp"
 
 namespace automaton {
 namespace logic {
@@ -20,5 +20,5 @@ private:
     uint32_t _current_step = 0;
 };
 
-} // namespace logic
-} // namespace automaton
+}  // namespace logic
+}  // namespace automaton

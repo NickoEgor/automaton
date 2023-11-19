@@ -1,37 +1,21 @@
-#include <automaton/grid/_2d.hpp>
+#include "automaton/grid/_2d.hpp"
+
+#include <utility>
 
 namespace automaton {
 
-grid_2d::grid_2d(uint32_t rows, uint32_t cols) : base_grid(rows, cols) {}
-
-grid_2d::~grid_2d() {}
-
-void grid_2d::add(uint32_t row, uint32_t col) { _data.emplace(row, col); }
-
-bool grid_2d::has(uint32_t row, uint32_t col) { return _data.find({row, col}) != _data.end(); }
-
-bool grid_2d::remove(uint32_t row, uint32_t col) {
-    auto it = _data.find({row, col});
-    if (it != _data.end()) {
-        _data.erase(it);
-        return true;
-    }
-
-    return false;
+bool cell_2d::operator<(const cell_2d& other) const {
+    if (row == other.row) return col < other.col;
+    // return backwards to put upper row in std::set first
+    return row > other.row;
 }
 
-void grid_2d::clear() { _data.clear(); }
-
-std::set<base_cell> grid_2d::get_drawable_cells() const { return {_data.begin(), _data.end()}; }
-
-void grid_2d::move(base_cell from, base_cell to) {
+void grid_2d::move(cell_2d from, cell_2d to) {
     auto it = _data.find(from);
     if (it != _data.end()) _data.erase(it);
 
     _data.insert(to);
 }
-
-const std::set<base_cell>& grid_2d::get_data() const { return _data; }
 
 void grid_2d::set_rows(uint32_t rows) {
     base_grid::set_rows(rows);
@@ -52,4 +36,4 @@ void grid_2d::update_sizes(uint32_t rows, uint32_t cols) {
     }
 }
 
-} // namespace automaton
+}  // namespace automaton

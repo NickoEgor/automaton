@@ -1,9 +1,11 @@
-#include <automaton/logic/wolfram.hpp>
+#include "automaton/logic/wolfram.hpp"
 
 namespace automaton {
 namespace logic {
 
-wolfram::wolfram(base_grid_ptr grid, int8_t code) : _grid(std::static_pointer_cast<grid_1d>(grid)), _code(code) {}
+wolfram::wolfram(base_grid_ptr grid, int8_t code)
+    : _grid(std::static_pointer_cast<grid_1d>(grid)),
+      _code(code) {}
 
 void wolfram::step() {
     uint32_t rows = _grid->get_rows(), cols = _grid->get_cols();
@@ -26,7 +28,8 @@ void wolfram::step() {
         if (_grid->has(row, col)) combination |= 0b010;
         if (_grid->has(row, next_col)) combination |= 0b100;
 
-        if ((_code >> combination) & 0b1) _grid->add(row + 1, col);
+        /* TODO: maybe create override for add(uint32_t, uint32_t) */
+        if ((_code >> combination) & 0b1) _grid->add({row + 1, col});
     }
 
     _current_step++;
@@ -34,5 +37,5 @@ void wolfram::step() {
 
 void wolfram::reset() { _current_step = 0; }
 
-} // namespace logic
-} // namespace automaton
+}  // namespace logic
+}  // namespace automaton

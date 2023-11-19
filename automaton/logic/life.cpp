@@ -1,13 +1,16 @@
-#include <automaton/logic/life.hpp>
+#include "automaton/logic/life.hpp"
+
+#include <set>
 
 namespace automaton {
 namespace logic {
 
-life_2d::life_2d(base_grid_ptr grid) : _grid(std::static_pointer_cast<grid_2d>(grid)) {}
+life_2d::life_2d(base_grid_ptr grid)
+    : _grid(std::static_pointer_cast<grid_2d>(grid)) {}
 
 void life_2d::step() {
     uint32_t rows = _grid->get_rows(), cols = _grid->get_cols();
-    std::set<base_cell> new_state;
+    std::set<cell_2d> new_state;
 
     for (uint32_t row = 0; row < rows; row++) {
         for (uint32_t col = 0; col < cols; col++) {
@@ -35,11 +38,12 @@ void life_2d::step() {
 
     _grid->clear();
 
+    /* TODO: probably worth replacing state completely, not one by one */
     for (const auto& cell : new_state)
-        _grid->add(cell.row, cell.col);
+        _grid->add(cell);
 }
 
 void life_2d::reset() {}
 
-} // namespace logic
-} // namespace automaton
+}  // namespace logic
+}  // namespace automaton

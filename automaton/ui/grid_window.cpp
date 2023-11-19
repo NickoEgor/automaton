@@ -1,19 +1,21 @@
 // vim: fdm=marker fdl=0
+#include "automaton/ui/grid_window.hpp"
+#include "automaton/grid/_1d.hpp"
+#include "automaton/grid/_2d.hpp"
+#include "automaton/grid/_3d.hpp"
+#include "automaton/logic/fall.hpp"
+#include "automaton/logic/life.hpp"
+#include "automaton/logic/wolfram.hpp"
+
 #include <glibmm/optioncontext.h>
 
-#include <automaton/grid/_1d.hpp>
-#include <automaton/grid/_2d.hpp>
-#include <automaton/grid/_3d.hpp>
-#include <automaton/logic/fall.hpp>
-#include <automaton/logic/life.hpp>
-#include <automaton/logic/wolfram.hpp>
-#include <automaton/ui/grid_window.hpp>
 #include <iostream>
 #include <memory>
 
 namespace automaton {
 
-grid_window::grid_window() : _grid(nullptr) {
+grid_window::grid_window()
+    : _grid(nullptr) {
     set_title("Automaton");
     set_default_size(800, 600);
     add(_frame);
@@ -199,4 +201,4 @@ void grid_window::on_resize() {
     if (_options.rows == 0) _grid->set_rows(_area.get_height() / _area.get_cell_width());
 }
 
-} // namespace automaton
+}  // namespace automaton

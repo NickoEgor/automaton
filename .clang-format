@@ -4,3 +4,7 @@ IndentWidth: 4
 UseTab: Never
 PointerAlignment: Left
 AllowShortIfStatementsOnASingleLine: WithoutElse
+PackConstructorInitializers: Never
+SpacesBeforeTrailingComments: 2
+AlwaysBreakTemplateDeclarations: Yes
+SpaceAfterTemplateKeyword: No

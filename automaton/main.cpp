@@ -1,6 +1,6 @@
 #include <gtkmm/application.h>
 
-#include <automaton/ui/grid_window.hpp>
+#include "automaton/ui/grid_window.hpp"
 
 int main(int argc, char* argv[]) {
     auto app = Gtk::Application::create(argc, argv, "org.gtkmm.Automaton", Gio::APPLICATION_HANDLES_COMMAND_LINE);

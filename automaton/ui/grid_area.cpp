@@ -1,7 +1,7 @@
+#include "automaton/ui/grid_area.hpp"
+
 #include <gdkmm/general.h>
 #include <glibmm/main.h>
-
-#include <automaton/ui/grid_area.hpp>
 
 namespace automaton {
 
@@ -250,9 +250,8 @@ void grid_area::draw_grid_cells(const cairo_context& cr) {
     cr->save();
     Gdk::Cairo::set_source_color(cr, _cell_color);
 
-    for (auto& cell : _grid->get_drawable_cells()) {
-        auto xy = get_cell_xy(cell.row, cell.col);
-        cr->rectangle(xy.first, xy.second, _cell_width, _cell_width);
+    for (const auto& [row, col] : _grid->get_drawable_cells()) {
+        cr->rectangle(_cell_width * col, _cell_width * row, _cell_width, _cell_width);
         cr->fill();
     }
 
@@ -273,10 +272,4 @@ double grid_area::get_grid_height() const {
     return _cell_width * _grid->get_rows();
 }
 
-std::pair<double, double> grid_area::get_cell_xy(uint32_t row, uint32_t col) const {
-    if (!_grid) return {0, 0};
-
-    return std::make_pair(_cell_width * col, _cell_width * row);
-}
-
-} // namespace automaton
+}  // namespace automaton

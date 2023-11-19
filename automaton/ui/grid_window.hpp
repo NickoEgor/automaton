@@ -1,12 +1,13 @@
 #pragma once
 
+#include "automaton/base/grid.hpp"
+#include "automaton/base/logic.hpp"
+#include "automaton/ui/grid_area.hpp"
+#include "automaton/utils/cmdline.hpp"
+
 #include <gtkmm/applicationwindow.h>
 #include <gtkmm/frame.h>
 
-#include <automaton/base/grid.hpp>
-#include <automaton/base/logic.hpp>
-#include <automaton/ui/grid_area.hpp>
-#include <automaton/utils/cmdline.hpp>
 #include <memory>
 
 namespace automaton {
@@ -40,4 +41,4 @@ public:
     int on_cmdline(const app_cmdline_ptr& cmdline, app_ptr& app);
 };
 
-} // namespace automaton
+}  // namespace automaton

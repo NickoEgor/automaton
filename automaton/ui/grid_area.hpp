@@ -1,9 +1,10 @@
 #pragma once
 
+#include "automaton/base/grid.hpp"
+#include "automaton/base/logic.hpp"
+
 #include <gtkmm/drawingarea.h>
 
-#include <automaton/base/grid.hpp>
-#include <automaton/base/logic.hpp>
 #include <memory>
 #include <utility>
 #include <vector>
@@ -50,7 +51,6 @@ private:
 
     double get_grid_width() const;
     double get_grid_height() const;
-    std::pair<double, double> get_cell_xy(uint32_t row, uint32_t col) const;
 
     base_logic_ptr _logic;
     base_grid_ptr _grid;
@@ -73,4 +73,4 @@ private:
     const double _line_width = 0.5;
 };
 
-} // namespace automaton
+}  // namespace automaton
