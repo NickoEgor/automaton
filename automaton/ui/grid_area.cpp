@@ -55,6 +55,7 @@ bool grid_area::on_draw_cells(const cairo_context& cr) {
 }
 
 bool grid_area::on_key_press(GdkEventKey* ev) {
+    g_debug("grid_area::on_key_press(key='%s')", ev->string);
     if (!_grid) return false;
 
     if (ev->keyval == GDK_KEY_s) {
@@ -76,7 +77,7 @@ bool grid_area::on_key_press(GdkEventKey* ev) {
 }
 
 bool grid_area::on_mouse_press(GdkEventButton* ev) {
-    g_debug("on_mouse_press()");
+    g_debug("grid_area::on_mouse_press()");
     if (!_grid) return false;
     if (!_is_editable) return false;
 
@@ -101,7 +102,7 @@ bool grid_area::on_mouse_press(GdkEventButton* ev) {
 }
 
 bool grid_area::on_mouse_release(GdkEventButton* ev) {
-    g_debug("on_mouse_release()");
+    g_debug("grid_area::on_mouse_release()");
     if (!_grid) return false;
     if (!_is_editable) return false;
 
@@ -139,20 +140,19 @@ bool grid_area::on_mouse_motion(GdkEventMotion* ev) {
 }
 
 bool grid_area::on_mouse_enter(GdkEventCrossing* ev) {
-    g_debug("on_mouse_enter()");
+    g_debug("grid_area::on_mouse_enter()");
     (void)ev;
     return false;
 }
 
 bool grid_area::on_mouse_leave(GdkEventCrossing* ev) {
-    g_debug("on_mouse_leave()");
+    g_debug("grid_area::on_mouse_leave()");
     (void)ev;
     return false;
 }
 
 bool grid_area::on_timeout() {
-    g_debug("on_timeout(): _is_drawing %d, _is_clearing %d", _is_drawing, _is_clearing);
-
+    g_debug("grid_area::on_timeout(is_drawing=%d, is_clearing=%d)", _is_drawing, _is_clearing);
     if (!_grid) return false;
 
     if (_is_drawing || _is_clearing) {
@@ -195,13 +195,11 @@ void grid_area::disable_motion() {
 }
 
 void grid_area::toggle_motion() {
-    g_debug("toggle_motion(): _is_motion %d", _is_motion);
+    g_debug("grid_area::toggle_motion(is_motion=%d)", _is_motion);
     if (!_is_motion)
         enable_motion();
     else
         disable_motion();
-
-    g_debug("toggle_motion(): new _is_motion %d", _is_motion);
 }
 
 void grid_area::draw_background(const cairo_context& cr) {
@@ -262,13 +260,11 @@ double grid_area::get_cell_width() const { return _cell_width; }
 
 double grid_area::get_grid_width() const {
     if (!_grid) return 0;
-
     return _cell_width * _grid->get_cols();
 }
 
 double grid_area::get_grid_height() const {
     if (!_grid) return 0;
-
     return _cell_width * _grid->get_rows();
 }
 

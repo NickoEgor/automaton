@@ -30,9 +30,8 @@ grid_window::grid_window()
     signal_check_resize().connect(sigc::mem_fun(*this, &grid_window::on_resize));
 }
 
-grid_window::~grid_window() {}
-
 bool grid_window::on_key_press(GdkEventKey* ev) {
+    g_debug("grid_window::on_key_press(key='%s')", ev->string);
     if (ev->keyval == GDK_KEY_q) {
         close();
         return true;
@@ -40,96 +39,94 @@ bool grid_window::on_key_press(GdkEventKey* ev) {
     return false;
 }
 
-int grid_window::on_cmdline(const app_cmdline_ptr& cmdline, app_ptr& app) {
-    // NOTE:
-    // https://gitlab.gnome.org/GNOME/glibmm/-/blob/glibmm-2-64/examples/options/main.cc
-
-    Glib::OptionContext ctx;
-
-    // {{{ main
+static Glib::OptionGroup add_main_group(cmdline* options) {
     Glib::OptionGroup group("options", "Main options");
 
     Glib::OptionEntry entry;
     entry.set_short_name('c');
     entry.set_long_name("cols");
-    entry.set_arg_description("NUM");
-    entry.set_description("Grid columns. Should be >= 0. Zero means fill window, sets by "
-                          "default");
-    group.add_entry(entry, _options.cols);
+    entry.set_arg_description("NUMBER");
+    entry.set_description(
+        Glib::ustring::compose("Grid columns. Should be >= 0. '0' means fill window. Default: %1", options->cols));
+    group.add_entry(entry, options->cols);
 
     entry = Glib::OptionEntry();
     entry.set_short_name('r');
     entry.set_long_name("rows");
-    entry.set_arg_description("NUM");
-    entry.set_description("Grid rows. Should be >= 0. Zero means fill window, sets by default");
-    group.add_entry(entry, _options.rows);
-
-    entry = Glib::OptionEntry();
-    entry.set_short_name('t');
-    entry.set_long_name("type");
-    entry.set_arg_description("TYPE");
-    entry.set_description("Grid type. Should be in '1D', '2D' or '3D'");
-    group.add_entry(entry, _options.type);
+    entry.set_arg_description("NUMBER");
+    entry.set_description(
+        Glib::ustring::compose("Grid rows. Should be >= 0. '0' means fill window. Default: %1", options->rows));
+    group.add_entry(entry, options->rows);
 
     entry = Glib::OptionEntry();
     entry.set_short_name('b');
     entry.set_long_name("borders");
-    /* entry.set_flags(Glib::OptionEntry::FLAG_NO_ARG); */
     entry.set_description("Draw borders between cells in grid");
-    group.add_entry(entry, _options.borders);
+    group.add_entry(entry, options->borders);
 
     entry = Glib::OptionEntry();
-    entry.set_short_name('d');
     entry.set_long_name("delay");
-    entry.set_arg_description("NUM");
-    entry.set_description("Sets delay between grid updates in ms");
-    group.add_entry(entry, _options.delay);
+    entry.set_arg_description("NUMBER");
+    entry.set_description(Glib::ustring::compose("Sets delay between grid updates in ms. Default: %1", options->delay));
+    group.add_entry(entry, options->delay);
 
     entry = Glib::OptionEntry();
     entry.set_long_name("cell-width");
-    entry.set_arg_description("NUM");
-    entry.set_description("Sets cell width in pixels");
-    group.add_entry(entry, _options.cell_width);
-
-    ctx.add_group(group);
-    // }}}
-
-    // {{{ 1D options
-    Glib::OptionGroup group_1d("1D", "1D options");
+    entry.set_arg_description("NUMBER");
+    entry.set_description(Glib::ustring::compose("Sets cell width in pixels. Default: %1", options->cell_width));
+    group.add_entry(entry, options->cell_width);
 
     entry = Glib::OptionEntry();
-    entry.set_long_name("code");
-    entry.set_arg_description("NUM");
-    entry.set_description("1D grid wolfram code. Should be from 0 to 255");
-    group.add_entry(entry, _options.code_1d);
-
-    ctx.add_group(group_1d);
-    // }}}
-
-    // {{{ 2D options
-    Glib::OptionGroup group_2d("2D", "2D options");
-
-    entry = Glib::OptionEntry();
+    entry.set_short_name('l');
     entry.set_long_name("logic");
-    entry.set_arg_description("LOGIC");
-    entry.set_description("2D grid logic. Should be in 'fall' or 'life'");
-    group.add_entry(entry, _options.logic_2d);
+    entry.set_arg_description("STRING");
+    entry.set_description(
+        Glib::ustring::compose("Grid logic. Should be 'wolfram', 'fall' or 'life'. Default: '%1'", options->logic));
+    group.add_entry(entry, options->logic);
 
-    ctx.add_group(group_2d);
-    // }}}
+    return group;
+}
 
-    // {{{ 3D options
-    Glib::OptionGroup group_3d("3D", "3D options");
+static Glib::OptionGroup add_wolfram_group(cmdline::wolfram_opts* options) {
+    Glib::OptionGroup group("wolfram", "Wolfram logic options");
 
-    entry = Glib::OptionEntry();
-    entry.set_long_name("levels");
-    entry.set_arg_description("NUM");
-    entry.set_description("3D grid levels amount. Should be >= 0. Zero means unlimited depth "
-                          "levels");
-    group.add_entry(entry, _options.levels_3d);
+    auto entry = Glib::OptionEntry();
+    entry.set_long_name("code");
+    entry.set_arg_description("NUMBER");
+    entry.set_description(Glib::ustring::compose("Wolfram code. Should be from 0 to 255. Default: %1", options->code));
+    group.add_entry(entry, options->code);
 
-    ctx.add_group(group_3d);
-    // }}}
+    return group;
+}
+
+static Glib::OptionGroup add_fall_group(cmdline::fall_opts* options) {
+    Glib::OptionGroup group("fall", "Fall logic options");
+
+    auto entry = Glib::OptionEntry();
+    entry.set_long_name("splices");
+    entry.set_arg_description("NUMBER");
+    entry.set_description(Glib::ustring::compose(
+        "Grid splices amount. Should be >= 0. '0' means unlimited depth. Default: %1", options->splices));
+    group.add_entry(entry, options->splices);
+
+    return group;
+}
+
+int grid_window::on_cmdline(const app_cmdline_ptr& cmdline, app_ptr& app) {
+    g_debug("grid_window::on_cmdline()");
+    // NOTE:
+    // https://gitlab.gnome.org/GNOME/glibmm/-/blob/glibmm-2-64/examples/options/main.cc
+
+    Glib::OptionContext ctx;
+
+    auto main_group = add_main_group(&_options);
+    ctx.add_group(main_group);
+
+    auto wolfram_group = add_wolfram_group(&_options.wolfram);
+    ctx.add_group(wolfram_group);
+
+    auto fall_group = add_fall_group(&_options.fall);
+    ctx.add_group(fall_group);
 
     // add GTK options, --help-gtk, etc
     Glib::OptionGroup gtkgroup(gtk_get_option_group(true));
@@ -168,22 +165,30 @@ void grid_window::initialize_grid() {
     uint32_t rows = _options.rows == 0 ? _area.get_height() / _area.get_cell_width() : _options.rows;
 
     // initialize grid
-    if (_options.type == "1D") {
+    if (_options.logic == "wolfram") {
+        g_debug("grid_window::initialize_grid(logic='%s', code=%d)", _options.logic.c_str(), _options.wolfram.code);
+
         _grid = std::make_shared<automaton::grid_1d>(rows, cols);
-        _logic = std::make_shared<logic::wolfram>(_grid, _options.code_1d);
+        _logic = std::make_shared<logic::wolfram>(_grid, _options.wolfram.code);
 
-    } else if (_options.type == "2D") {
-        _grid = std::make_shared<automaton::grid_2d>(rows, cols);
-        // initialize logic
-        if (_options.logic_2d == "fall")
-            _logic = std::make_shared<logic::fall_2d>(_grid);
-        else if (_options.logic_2d == "life")
-            _logic = std::make_shared<logic::life_2d>(_grid);
+    } else if (_options.logic == "fall" && _options.fall.splices != 1) {
+        g_debug("grid_window::initialize_grid 3d(logic='%s', splices=%d)", _options.logic.c_str(),
+                _options.fall.splices);
 
-    } else if (_options.type == "3D") {
         _grid = std::make_shared<automaton::grid_3d>(rows, cols);
-        // initialize logic
-        _logic = std::make_shared<logic::fall_3d>(_grid, _options.levels_3d);
+        _logic = std::make_shared<logic::fall_3d>(_grid, _options.fall.splices);
+
+    } else {  // "life" or "fall" with splices == 1
+        _grid = std::make_shared<automaton::grid_2d>(rows, cols);
+
+        if (_options.logic == "fall") {
+            g_debug("grid_window::initialize_grid 2d(logic='%s', splices=%d)", _options.logic.c_str(),
+                    _options.fall.splices);
+            _logic = std::make_shared<logic::fall_2d>(_grid);
+        } else if (_options.logic == "life") {
+            g_debug("grid_window::initialize_grid(logic='%s')", _options.logic.c_str());
+            _logic = std::make_shared<logic::life_2d>(_grid);
+        }
     }
 
     // setup grid drawing area
@@ -194,10 +199,10 @@ void grid_window::initialize_grid() {
 }
 
 void grid_window::on_resize() {
+    g_debug("grid_window::on_resize()");
     if (!_grid) return;
 
     if (_options.cols == 0) _grid->set_cols(_area.get_width() / _area.get_cell_width());
-
     if (_options.rows == 0) _grid->set_rows(_area.get_height() / _area.get_cell_width());
 }
 

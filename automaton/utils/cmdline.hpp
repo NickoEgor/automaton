@@ -11,32 +11,34 @@ struct cmdline {
     // main
     int cols = 0;  // 0 - means fill widget width
     int rows = 0;  // 0 - means fill widget height
-    Glib::ustring type = "2D";
     bool borders = false;
     int delay = 100;
     double cell_width = 15;
-    // 1D
-    int code_1d = 22;
-    // 2D
-    Glib::ustring logic_2d = "fall";
-    // 3D
-    int levels_3d = 0;  // 0 - means unlimited levels
 
+    // wolfram, fall, life
+    Glib::ustring logic = "fall";
+
+    struct wolfram_opts {
+        int code = 22;
+    } wolfram;
+
+    struct fall_opts {
+        int splices = 1;  // 0 - means unlimited splices
+    } fall;
+
+    // returns false with failed options, otherwise true
     std::tuple<bool, std::string> validate() const;
 
 private:
-    // main
     bool validate_cols() const;
     bool validate_rows() const;
-    bool validate_type() const;
     bool validate_delay() const;
     bool validate_cell_width() const;
-    // 1D
-    bool validate_code_1d() const;
-    // 2D
-    bool validate_logic_2d() const;
-    // 3D
-    bool validate_levels_3d() const;
+    bool validate_dimensions() const;
+
+    bool validate_logic() const;
+    bool validate_wolfram() const;
+    bool validate_fall() const;
 };
 
 }  // namespace automaton

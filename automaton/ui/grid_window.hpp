@@ -18,7 +18,7 @@ public:
     using app_ptr = Glib::RefPtr<Gtk::Application>;
 
     grid_window();
-    ~grid_window() override;
+    ~grid_window() override = default;
 
 private:
     // GUI members
